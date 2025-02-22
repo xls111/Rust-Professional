@@ -30,6 +30,35 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let (from_node, to_node, weight) = edge;
+        let nodes: HashSet<String> = self.adjacency_table().keys().cloned().collect();
+        if !nodes.contains(&from_node.to_string()) {
+            self.add_node(from_node);
+        }
+        if !nodes.contains(&to_node.to_string()) {
+            self.add_node(to_node);
+        }
+
+        // Add edges in both directions
+        self.adjacency_table_mutable()
+            .get_mut(&from_node.to_string())
+            .map(|neighbors| {
+                if let Some((_, value)) = neighbors.iter_mut().find(|(key, _)| key == &to_node.to_string()) {
+                    *value = weight;
+                } else {
+                    neighbors.push((to_node.to_string(), weight));
+                }
+            });
+
+        self.adjacency_table_mutable()
+            .get_mut(&to_node.to_string())
+            .map(|neighbors| {
+                if let Some((_, value)) = neighbors.iter_mut().find(|(key, _)| key == &from_node.to_string()) {
+                    *value = weight;
+                } else {
+                    neighbors.push((from_node.to_string(), weight));
+                }
+            });
     }
 }
 pub trait Graph {
@@ -38,7 +67,9 @@ pub trait Graph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
         //TODO
-		true
+		self.adjacency_table_mutable()
+            .insert(node.to_string(), Vec::<(String, i32)>::new())
+            .is_some()
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO

@@ -5,9 +5,17 @@
 */
 
 
-fn sort<T>(array: &mut [T]){
+fn sort<T>(array: &mut [T]) where T:std::cmp::PartialOrd {
 	//TODO
+    for i in 1..array.len(){
+        let mut curr = i;
+        while curr > 0 && array[curr -1] > array[curr] {
+            array.swap(curr -1, curr);
+            curr -= 1;
+        }
+    }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
