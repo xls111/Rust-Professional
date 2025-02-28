@@ -12,7 +12,9 @@ include = [
 [workspace]
 members = [
     "./",
-    "exercises/easy"
+    "exercises/easy",
+    "exercises/normal/solution*",
+    "exercises/hard/solution*"
 ]
 
 [dependencies]

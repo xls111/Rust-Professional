@@ -15,7 +15,8 @@ mod tests {
         let start = Instant::now();
         let result = count_provinces();
         let duration = start.elapsed();
-
+        // println!("Result: {}", result);
+        
         // 时间超1s，判定不合格
         let mut total_score = 0.0;
 

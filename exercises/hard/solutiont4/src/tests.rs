@@ -4,7 +4,8 @@ mod calc_time;
 #[cfg(test)]
 mod tests {
     use super::calc_time::time_info;
-    use std::time::{Instant, Duration};
+    use core::time;
+    use std::{result, time::{Duration, Instant}};
 
     
     const TEST_CASES: &[(&str, &str)] = &[
@@ -46,5 +47,24 @@ mod tests {
 
         println!("Total score: {:.2}", total_score);
         assert_eq!(100.00, total_score);
+    }
+
+    #[test]
+    fn test_my_calc_time() {
+        let result = time_info("2025-01-01");
+        println!("result: {}", result);
+        assert_eq!(result, "1,3,1,364,28,0");
+
+        let result = time_info("2025-01-18");
+        println!("result: {}", result);
+        assert_eq!(result, "3,6,18,347,11,1");
+
+        let result = time_info("2025-12-31");
+        println!("result: {}", result);
+        assert_eq!(result, "1,3,365,0,48,1");
+
+        let result = time_info("2025-11-01");
+        println!("result: {}", result);
+        assert_eq!(result, "44,6,305,60,108,1");
     }
 }
