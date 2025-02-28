@@ -74,7 +74,7 @@ impl<T> LinkedList<T> {
         self.end = None;
     }
 
-    pub fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self {
+    pub fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self where T: Copy + PartialOrd {
         //TODO
 		let mut list_c = LinkedList::<T>::new();
         let mut node_a = list_a.start;
