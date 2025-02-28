@@ -44,7 +44,7 @@ fn days_to_date(day: u32,year: u32) -> Result<Date, &'static str> {
         month += 1;
     }
 
-    if month >= 12 || day <= 0 {
+    if month >= 12 || day == 0 {
         return Err("Invalid date calculation");
     }
 
