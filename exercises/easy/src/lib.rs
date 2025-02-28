@@ -1,4 +1,4 @@
-
+pub mod algorithm1;
 pub mod algorithm5;
 pub mod algorithm6;
 pub mod algorithm7;

@@ -21,19 +21,19 @@ impl<T> Node<T> {
     }
 }
 #[derive(Debug)]
-struct LinkedList<T:Clone> {
+struct LinkedList<T> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> where T: Clone + PartialOrd + Debug{
+impl<T> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> where T:Clone + PartialOrd + Debug {
+impl<T> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -74,72 +74,39 @@ impl<T> LinkedList<T> where T:Clone + PartialOrd + Debug {
         self.end = None;
     }
 
-    pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self {
-
-        let mut merge_list = Self::new();
+    pub fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self {
         //TODO
-        match list_a.end {
-            None => match list_b.start {
-                None => merge_list,
-                Some(_) => list_b
-            },
-            Some(_) => match list_b.start{
-                None => list_a,
-                Some(_) => {
-                    let mut max_list;
-                    let mut min_list;
-                    match list_a.length < list_b.length {
-                        true => {min_list = list_a; max_list = list_b;},
-                        false => {min_list = list_b; max_list = list_a;}
-                    };
-
-                    while let Some(node) = min_list.start {
-                        let val1 = unsafe { (*node.as_ptr()).val.clone() };
-                        // println!("val1 {:?}", val1);
-                        // println!("max list length: {}", max_list.length);
-                        if max_list.length < 1 {
-                            break;
-                        }
-                        let val2 = unsafe { (*max_list.start.unwrap().as_ptr()).val.clone() };
-                        
-                        // println!("val2 {:?}", val2);
-                        if val1 < val2 {
-                            merge_list.add(val1);
-                            min_list.start = unsafe { (*node.as_ptr()).next};
-                            min_list.length -= 1;
-                        } else {
-                            merge_list.add(val2);
-                            max_list.start = unsafe { (*max_list.start.unwrap().as_ptr()).next };
-                            max_list.length -= 1;
-                        }
-                    }
-
-                    while let Some(node) = max_list.start {
-                        let val = unsafe { (*node.as_ptr()).val.clone() };
-                        merge_list.add(val);
-                        max_list.start = unsafe { (*node.as_ptr()).next};
-                        max_list.length -= 1;
-                    }
-
-                    while let Some(node) = min_list.start {
-                        let val = unsafe { (*node.as_ptr()).val.clone() };
-                        merge_list.add(val);
-                        min_list.start = unsafe { (*node.as_ptr()).next};
-                        min_list.length -= 1;
-                    }
-
-                    max_list.clear();
-                    min_list.clear();
-                    merge_list
-                }
+		let mut list_c = LinkedList::<T>::new();
+        let mut node_a = list_a.start;
+        let mut node_b = list_b.start;
+        while node_a.is_some() && node_b.is_some() {
+            let val_a = unsafe { node_a.unwrap().as_ref().val };
+            let val_b = unsafe { node_b.unwrap().as_ref().val };
+            if val_a < val_b {
+                list_c.add(val_a);
+                node_a = unsafe { node_a.unwrap().as_ref().next };
+            } else {
+                list_c.add(val_b);
+                node_b = unsafe { node_b.unwrap().as_ref().next };
             }
         }
+        while node_a.is_some() {
+            let val_a = unsafe { node_a.unwrap().as_ref().val };
+            list_c.add(val_a);
+            node_a = unsafe { node_a.unwrap().as_ref().next };
+        }
+        while node_b.is_some() {
+            let val_b = unsafe { node_b.unwrap().as_ref().val };
+            list_c.add(val_b);
+            node_b = unsafe { node_b.unwrap().as_ref().next };
+        }
+        list_c
     }
 }
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display + Clone,
+    T: Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
